@@ -1,4 +1,5 @@
 from setuptools import setup
+import os
 
 setup(
     name='faillog',
@@ -8,3 +9,5 @@ setup(
         'flask',
     ],
 )
+
+open('faillog/faillog.db', 'a').close()
