@@ -28,12 +28,16 @@ def api():
     with open('./sshd.json', 'r') as f: 
         lines = 0
         for line in f:
-            if lines <= max_len:
-                data = json.loads(line)
-                found = re.findall(r'\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b', data['MESSAGE'])
-                if found:
-                    addresses.append(''.join(found))
-                    lines += 1
+                objects = re.split('(\{.*?\})(?= *\{)', line.rstrip())
+                print(len(objects))
+                print(objects)
+                for o in objects:
+                    if lines <= max_len:
+                        data = json.loads(o)
+                        found = re.findall(r'\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b', data['MESSAGE'])
+                        if found:
+                            addresses.append(''.join(found))
+                            lines += 1
     for ip in addresses:
         result = Address.query.filter(Address.ip == ip)
         if result.count() != 0:
