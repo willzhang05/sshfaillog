@@ -1,4 +1,4 @@
-from flask import render_template
+from flask import request, render_template
 from faillog import app
 from faillog.database import db_session
 from faillog.models import Address
@@ -15,15 +15,25 @@ def index():
 
 @app.route('/api')
 def api():
+    limit = request.args.get('limit')
+    max_len = 10000
+    if limit:
+        try:
+            max_len = int(limit)
+        except:
+            return render_template('error.html'), 400
 
     addresses = []
     out = dict()
     with open('./sshd.json', 'r') as f: 
+        lines = 0
         for line in f:
-            data = json.loads(line)
-            found = re.findall(r'\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b', data['MESSAGE'])
-            if found:
-                addresses.append(''.join(found))
+            if lines <= max_len:
+                data = json.loads(line)
+                found = re.findall(r'\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b', data['MESSAGE'])
+                if found:
+                    addresses.append(''.join(found))
+                    lines += 1
     for ip in addresses:
         result = Address.query.filter(Address.ip == ip)
         if result.count() != 0:
