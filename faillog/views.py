@@ -13,6 +13,7 @@ API_URL = 'http://geoip.nekudo.com/api/'
 def index():
     return render_template('index.html')
 
+
 @app.route('/api')
 def api():
     limit = request.args.get('limit')
@@ -25,16 +26,19 @@ def api():
 
     addresses = []
     out = []
-    with open('./sshd.json', 'r') as f: 
+    with open('./sshd.json', 'r') as f:
         lines = 0
         for line in f:
-                objects = re.split('(\{.*?\})(?= *\{)', line.rstrip())
-                print(len(objects))
-                print(objects)
-                for o in objects:
+            line_split = re.split('(\{.*?\})(?= *\{)', line.rstrip())
+            objects = [o for o in line_split if not re.match(r'\s', o)]
+            print(len(objects))
+            print(objects)
+            for o in objects:
+                if o != '':
                     if lines <= max_len:
                         data = json.loads(o)
-                        found = re.findall(r'\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b', data['MESSAGE'])
+                        found = re.findall(
+                            r'\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b', data['MESSAGE'])
                         if found:
                             addresses.append(''.join(found))
                             lines += 1
