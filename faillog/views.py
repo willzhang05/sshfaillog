@@ -35,7 +35,7 @@ def api():
             print(objects)
             for o in objects:
                 if o != '':
-                    if lines <= max_len:
+                    if lines < max_len:
                         data = json.loads(o)
                         found = re.findall(
                             r'\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b', data['MESSAGE'])
