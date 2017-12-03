@@ -1,23 +1,32 @@
 #!/bin/bash
+
+if [[ -z $1 ]];
+then
+    echo "Please specify a time interval."
+    echo "Usage: ./fetch_journal.sh <time interval> <copy interval>"
+    exit
+fi
+if [[ $1 == "--help" ]];
+then
+    echo "Usage: ./fetch_journal.sh <time interval> <copy interval>"
+    echo "The time interval is used to specify time between journal reads, and the copy interval is used to reduce disk I/O."
+    echo -e "\t--help\tdisplay this help and exit"
+    exit
+fi
+
 touch sshd.json
 journalctl -q -u sshd --no-pager -o json -n 100 > sshd.json
 TIME=$( date +"%T" )
+
 while true
 do
         LENGTH=$(fgrep -o "{" sshd.json | wc -l)
         NEWDATA=$(journalctl -q -u sshd --no-pager -o json --since $TIME)
         DELTA=$(echo $NEWDATA | fgrep -o "{" | wc -l)
-        echo $LENGTH
-        echo $DELTA
         if [[ $DELTA -gt 2 ]]; then
-            head -n $DELTA sshd.json
             sed -i 1,"$DELTA"d sshd.json
             echo $NEWDATA >> sshd.json
             TIME=$( date +"%T" )
         fi
-        #if [[ $LENGTH -gt 100 ]]; then
-        #    journalctl -q -u sshd --no-pager -o json -n 100 > sshd.json
-        #fi
-        sleep 2
-        
+        sleep $1
 done
