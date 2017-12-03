@@ -24,7 +24,7 @@ def api():
             return render_template('error.html'), 400
 
     addresses = []
-    out = dict()
+    out = []
     with open('./sshd.json', 'r') as f: 
         lines = 0
         for line in f:
@@ -37,14 +37,18 @@ def api():
     for ip in addresses:
         result = Address.query.filter(Address.ip == ip)
         if result.count() != 0:
-            out[ip] = result.first().data
+            new_dict = dict()
+            new_dict[ip] = result.first().data
+            out.append(new_dict)
         else:
             r = requests.get(API_URL + ip)
             if r.status_code == 200:
                 response = r.json()
-                out[ip] = response
+                new_dict = dict()
+                new_dict[ip] = respose
+                out.append(new_dict)
                 a = Address(ip, response)
                 db_session.add(a)
                 db_session.commit()
                 print(ip, response)
-    return str(out)
+    return json.dumps(out)
