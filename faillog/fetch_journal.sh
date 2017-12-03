@@ -18,7 +18,7 @@ touch sshd.json
 journalctl -q -u sshd --no-pager -o json -n 10000 | grep -i "attempts exceeded" > sshd.json
 TIME=$( date +"%T" )
 LENGTH=$(fgrep -o "{" sshd.json | wc -l)
-echo $LENGTH
+#echo $LENGTH
 
 while true
 do
