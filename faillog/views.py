@@ -45,7 +45,7 @@ def api():
             if r.status_code == 200:
                 response = r.json()
                 new_dict = dict()
-                new_dict[ip] = respose
+                new_dict[ip] = response
                 out.append(new_dict)
                 a = Address(ip, response)
                 db_session.add(a)

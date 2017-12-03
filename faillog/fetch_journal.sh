@@ -15,14 +15,14 @@ then
 fi
 
 touch sshd.json
-journalctl -q -u sshd --no-pager -o json -n 10000 | grep -i "attempts exceeded" > sshd.json
+journalctl -q -u sshd --no-pager -o json -n 10000 | egrep -i "attempts exceeded|Bye Bye" > sshd.json
 TIME=$( date +"%T" )
 LENGTH=$(fgrep -o "{" sshd.json | wc -l)
-#echo $LENGTH
+echo $LENGTH
 
 while true
 do
-        NEWDATA=$(journalctl -q -u sshd --no-pager -o json --since $TIME | grep -i "attempts exceeded")
+        NEWDATA=$(journalctl -q -u sshd --no-pager -o json --since $TIME | egrep -i "attempts exceeded|Bye Bye")
         DELTA=$(echo $NEWDATA | fgrep -o "{" | wc -l)
         if [[ $DELTA -gt 2 ]]; then
             sed -i 1,"$DELTA"d sshd.json
