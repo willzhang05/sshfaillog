@@ -3,7 +3,7 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 
 engine = create_engine(
-    'sqlite:////var/www/faillog/faillog.db',
+        'sqlite:////var/www/faillog/faillog/faillog.db',
     convert_unicode=True)
 db_session = scoped_session(sessionmaker(autocommit=False,
                                          autoflush=False,

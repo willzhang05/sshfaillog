@@ -1,7 +1,7 @@
 certifi==2017.11.5
 chardet==3.0.4
 click==6.7
--e git+git@github.com:willzhang05/faillog.git@86f2aef12864d7a0987df670c47e27190e047705#egg=faillog
+-e git+git@github.com:willzhang05/faillog.git@63c8e1a4f2c1f184ed6bc000eb89f84bdd37cb61#egg=faillog
 Flask==0.12.2
 idna==2.6
 itsdangerous==0.24
