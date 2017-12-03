@@ -5,5 +5,5 @@ app = Flask(__name__)
 #DATABASE = './faillog.db'
 
 import faillog.views
-journal = subprocess.Popen(['./fetch_journal.sh'])
+journal = subprocess.Popen(['./fetch_journal.sh', '5'])
 
