@@ -6,6 +6,7 @@ then
     echo "Usage: ./fetch_journal.sh <time interval> <copy interval>"
     exit
 fi
+
 if [[ $1 == "--help" ]];
 then
     echo "Usage: ./fetch_journal.sh <time interval> <copy interval>"
@@ -16,6 +17,7 @@ fi
 
 touch sshd.json
 journalctl -q -u sshd --no-pager -o json -n 10000 | egrep -i "attempts exceeded|Bye Bye" > sshd.json
+
 TIME=$( date +"%T" )
 LENGTH=$(fgrep -o "{" sshd.json | wc -l)
 echo $LENGTH

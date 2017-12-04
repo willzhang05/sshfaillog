@@ -1,7 +1,8 @@
-from flask import request, render_template
+from flask import request, render_template, Response
 from faillog import app
 from faillog.database import db_session
 from faillog.models import Address
+
 import re
 import json
 import requests
@@ -25,7 +26,6 @@ def api():
             return render_template('error.html'), 400
 
     addresses = []
-    out = []
     with open('./sshd.json', 'r') as f:
         lines = 0
         for line in f:
@@ -42,6 +42,8 @@ def api():
                         if found:
                             addresses.append(''.join(found))
                             lines += 1
+
+    out = []
     for ip in addresses:
         result = Address.query.filter(Address.ip == ip)
         if result.count() != 0:
@@ -59,4 +61,4 @@ def api():
                 db_session.add(a)
                 db_session.commit()
                 print(ip, response)
-    return json.dumps(out)
+    return Response(json.dumps(out), mimetype='application/json')

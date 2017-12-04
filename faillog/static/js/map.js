@@ -39,13 +39,14 @@ function putData(data) {
     var baseLayer = L.tileLayer(
         'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://cloudmade.com">CloudMade</a>',
+            minZoom: 3,
             maxZoom: 18
         }
     );
     var cfg = {
         // radius should be small ONLY if scaleRadius is true (or small radius is intended)
         "radius": 2,
-        "maxOpacity": .8,
+        "maxOpacity": .6,
         // scales the radius based on map zoom
         "scaleRadius": true,
         // if set to false the heatmap uses the global maximum for colorization
