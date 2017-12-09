@@ -3,18 +3,19 @@
 function parseData(data, response, callback) {
     for (var ip in response) {
         if (response.hasOwnProperty(ip)) {
-            key = Object.keys(response[ip])[0];
-            city = response[ip][key]['city'];
-            country = response[ip][key]['country']['name'];
-            latitude = response[ip][key]['location']['latitude'];
-            longitude = response[ip][key]['location']['longitude'];
-
-            console.log([key, city, country, latitude, longitude].join(", "));
+            city = response[ip]['city'];
+            country = response[ip]['country']['name'];
+            latitude = response[ip]['location']['latitude'];
+            longitude = response[ip]['location']['longitude'];
+            console.log([ip, city, country, latitude, longitude].join(", "));
 
             exists = false;
             for (var i = 0; i < data.length; i++) {
                 if (data[i]['lat'] == latitude && data[i]['lng'] == longitude) {
                     data[i] = {
+                        ip: ip,
+                        city: city,
+                        country: country,
                         lat: latitude,
                         lng: longitude,
                         count: entry['count'] += 1
@@ -24,6 +25,9 @@ function parseData(data, response, callback) {
             }
             if (!exists) {
                 entry = {
+                    ip: ip,
+                    city: city,
+                    country: country,
                     lat: latitude,
                     lng: longitude,
                     count: 1
@@ -60,19 +64,39 @@ function putData(data) {
         // which field name in your data represents the data value - default "value"
         valueField: 'count'
     };
-    var heatmapLayer = new HeatmapOverlay(cfg);
-    var map = new L.Map('map', {
-        center: new L.LatLng(38.9072, -77.0369),
-        zoom: 4,
-        layers: [baseLayer, heatmapLayer]
-    });
-    var testData = {
-        max: 8,
-        data: data
-    };
-    heatmapLayer.setData(testData);
-    // make accessible for debugging
-    layer = heatmapLayer;
+    if(map_type === 'heatmap' || map_type === 'heat') {
+        var heatmapLayer = new HeatmapOverlay(cfg);
+        var map = new L.Map('map', {
+            center: new L.LatLng(38.9072, -77.0369),
+            zoom: 4,
+            layers: [baseLayer, heatmapLayer]
+        });
+        var testData = {
+            max: 8,
+            data: data
+        };
+        heatmapLayer.setData(testData);
+        // make accessible for debugging
+        layer = heatmapLayer;
+    } else {
+        //var popupLayer = new 
+        var map = new L.Map('map', {
+            center: new L.LatLng(38.9072, -77.0369),
+            zoom: 4,
+            layers: [baseLayer]
+        });
+        for(var d = 0; d < data.length; d++) {
+            var latlng = L.latLng(data[d].lat, data[d].lng);
+            //L.popup().setLatLng(latlng).setContent('<p>' + data[d]['ip'] + '</p>').openOn(map);
+            var marker = new L.Marker(latlng);
+            //marker.bindPopup('<p>' + data[d]['ip'] + '</p>');
+            var popup = new L.popup();
+            popup.setLatLng(latlng);
+            popup.setContent('<p>' + data[d].ip + ': ' + data[d].city + ', ' + data[d].country + '</p>')
+            marker.bindPopup(popup).openPopup();
+            map.addLayer(marker);
+        }
+    }
 }
 
 

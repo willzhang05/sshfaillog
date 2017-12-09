@@ -7,7 +7,9 @@ import re
 import json
 import requests
 
-API_URL = 'http://geoip.nekudo.com/api/'
+API_URL_0 = 'http://geoip.nekudo.com/api/'
+API_URL_1 = 'https://freegeoip.net/json/'
+
 
 
 @app.route('/')
@@ -43,20 +45,25 @@ def api():
                             addresses.append(''.join(found))
                             lines += 1
 
-    out = []
+    out = dict()
     for ip in addresses:
         result = Address.query.filter(Address.ip == ip)
         if result.count() != 0:
-            new_dict = dict()
-            new_dict[ip] = result.first().data
-            out.append(new_dict)
+            data = result.first().data
+            data.pop('ip', None)
+            out[ip] = data
         else:
-            r = requests.get(API_URL + ip)
+            r = requests.get(API_URL_0 + ip)
             if r.status_code == 200:
                 response = r.json()
-                new_dict = dict()
-                new_dict[ip] = response
-                out.append(new_dict)
+                if not response['city']:
+                    r_n = requests.get(API_URL_1 + ip)
+                    if r_n.status_code == 200:
+                        city = r_n.json()
+                        response['city'] = city
+
+                response.pop('ip', None)
+                out[ip] = response
                 a = Address(ip, response)
                 db_session.add(a)
                 db_session.commit()
