@@ -31,8 +31,8 @@ def api():
         for line in f:
             line_split = re.split('(\{.*?\})(?= *\{)', line.rstrip())
             objects = [o for o in line_split if not re.match(r'\s', o)]
-            print(len(objects))
-            print(objects)
+#            print(len(objects))
+#            print(objects)
             for o in objects:
                 if o != '':
                     if lines < max_len:
@@ -60,5 +60,5 @@ def api():
                 a = Address(ip, response)
                 db_session.add(a)
                 db_session.commit()
-                print(ip, response)
+#                print(ip, response)
     return Response(json.dumps(out), mimetype='application/json')
