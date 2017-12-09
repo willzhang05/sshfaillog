@@ -64,7 +64,22 @@ function putData(data) {
         // which field name in your data represents the data value - default "value"
         valueField: 'count'
     };
-    if(map_type === 'heatmap' || map_type === 'heat') {
+    if(map_type === 'marker' || map_type === 'popup' || map_type == 'pinpoint' || map_type == 'pins') {
+        var map = new L.Map('map', {
+            center: new L.LatLng(38.9072, -77.0369),
+            zoom: 4,
+            layers: [baseLayer]
+        });
+        for(var d = 0; d < data.length; d++) {
+            var latlng = L.latLng(data[d].lat, data[d].lng);
+            var marker = new L.Marker(latlng);
+            var popup = new L.popup();
+            popup.setLatLng(latlng);
+            popup.setContent('<p>' + data[d].ip + ': ' + data[d].city + ', ' + data[d].country + '</p>')
+            marker.bindPopup(popup).openPopup();
+            map.addLayer(marker);
+        }
+    } else {
         var heatmapLayer = new HeatmapOverlay(cfg);
         var map = new L.Map('map', {
             center: new L.LatLng(38.9072, -77.0369),
@@ -78,24 +93,6 @@ function putData(data) {
         heatmapLayer.setData(testData);
         // make accessible for debugging
         layer = heatmapLayer;
-    } else {
-        //var popupLayer = new 
-        var map = new L.Map('map', {
-            center: new L.LatLng(38.9072, -77.0369),
-            zoom: 4,
-            layers: [baseLayer]
-        });
-        for(var d = 0; d < data.length; d++) {
-            var latlng = L.latLng(data[d].lat, data[d].lng);
-            //L.popup().setLatLng(latlng).setContent('<p>' + data[d]['ip'] + '</p>').openOn(map);
-            var marker = new L.Marker(latlng);
-            //marker.bindPopup('<p>' + data[d]['ip'] + '</p>');
-            var popup = new L.popup();
-            popup.setLatLng(latlng);
-            popup.setContent('<p>' + data[d].ip + ': ' + data[d].city + ', ' + data[d].country + '</p>')
-            marker.bindPopup(popup).openPopup();
-            map.addLayer(marker);
-        }
     }
 }
 

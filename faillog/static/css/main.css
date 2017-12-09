@@ -17,7 +17,7 @@ body * {
     background: rgba(0, 0, 0, .8) !important;
 }
 h1 {
-    width: 150px;
+    width: 125px;
     height: 100%;
     margin: 0;
     font-size: 1.5em;
@@ -55,7 +55,7 @@ nav#menu a {
 nav#menu button {
     cursor: pointer;
     outline: none;
-    width: 100px;
+    width: 75px;
     height: 100%;
     border: none;
     color: #fff;

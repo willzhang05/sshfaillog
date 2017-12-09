@@ -14,7 +14,8 @@ API_URL_1 = 'https://freegeoip.net/json/'
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    map_type = request.args.get('type')
+    return render_template('index.html', map_type=map_type)
 
 
 @app.route('/api')
