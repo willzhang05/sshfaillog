@@ -11,7 +11,6 @@ API_URL_0 = 'http://geoip.nekudo.com/api/'
 API_URL_1 = 'https://freegeoip.net/json/'
 
 
-
 @app.route('/')
 def index():
     map_type = request.args.get('type')
@@ -60,8 +59,13 @@ def api():
                 if not response['city']:
                     r_n = requests.get(API_URL_1 + ip)
                     if r_n.status_code == 200:
-                        city = r_n.json()
+                        data = r_n.json()
+                        city = data['city']
+                        lat = data['latitude']
+                        lng = data['longitude']
                         response['city'] = city
+                        response['location']['latitude'] = lat
+                        response['location']['longitude'] = lng
 
                 response.pop('ip', None)
                 out[ip] = response

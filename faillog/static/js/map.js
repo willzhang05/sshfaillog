@@ -75,7 +75,11 @@ function putData(data) {
             var marker = new L.Marker(latlng);
             var popup = new L.popup();
             popup.setLatLng(latlng);
-            popup.setContent('<p>' + data[d].ip + ': ' + data[d].city + ', ' + data[d].country + '</p>')
+            if (data[d].city == '') {
+                popup.setContent('<p>' + data[d].ip + ': ' + data[d].country + '</p>')
+            } else {
+                popup.setContent('<p>' + data[d].ip + ': ' + data[d].city + ', ' + data[d].country + '</p>')
+            }
             marker.bindPopup(popup).openPopup();
             map.addLayer(marker);
         }
